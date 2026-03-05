@@ -114,7 +114,8 @@
     <div class="container">
         <div class="heart"></div>
         <div class="wish-text">
-            ️8/3❤️  <br>
+            ️Input: Anh - Output: Yêu Em <br>
+			❤️8/3❤️  <br>
             Chúc cô gái anh yêu luôn xinh đẹp, hạnh phúc <br>
             Chúc em tất cả <br>
 			Cám ơn em đã đến bên anh <br>
@@ -123,6 +124,25 @@
     </div>
 
     <script>
+        function startSurprise() {
+            // Phát nhạc
+            const music = document.getElementById('bg-music');
+            music.play().catch(e => console.log("Audio play failed"));
+
+            // Chuyển màn hình
+            document.getElementById('welcome-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('typing-text').classList.add('animate-typing');
+                setTimeout(() => {
+                    document.getElementById('wish').classList.add('animate-fade');
+                }, 3000);
+            }, 1000);
+
+            setInterval(createSparkle, 150);
+        }
+
         function createSparkle() {
             const sparkle = document.createElement('div');
             sparkle.classList.add('sparkle');
@@ -132,7 +152,7 @@
             document.body.appendChild(sparkle);
             setTimeout(() => sparkle.remove(), 3000);
         }
-        setInterval(createSparkle, 150);
     </script>
 </body>
 </html>
+
