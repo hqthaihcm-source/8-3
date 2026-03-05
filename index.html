@@ -2,7 +2,6 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gửi người anh yêu</title>
     <style>
         body {
@@ -13,44 +12,17 @@
             align-items: center;
             min-height: 100vh;
             background-color: #ffebee;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', Courier, monospace; /* Font kiểu code */
             overflow: hidden;
         }
 
-        /* Màn hình chờ */
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffebee;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: opacity 1s ease;
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .gift-btn {
-            padding: 20px 40px;
-            font-size: 1.2rem;
-            background-color: #ff4d6d;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            transition: transform 0.3s;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .gift-btn:hover { transform: scale(1.1); background-color: #ff758f; }
-
-        /* Container chính */
-        .container { text-align: center; display: none; }
-
+        /* Dòng code Input/Output */
         .code-header {
             color: #d81b60;
             font-size: 1.2rem;
@@ -61,12 +33,20 @@
             width: 0;
             margin-left: auto;
             margin-right: auto;
+            animation: typing 3s steps(30) forwards, blink 0.5s step-end infinite;
         }
 
-        .animate-typing { animation: typing 2.5s steps(30) forwards, blink 0.5s step-end infinite; }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink { from, to { border-color: transparent } 50% { border-color: #ff4d6d } }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
 
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: #ff4d6d }
+        }
+
+        /* Hiệu ứng trái tim đập */
         .heart {
             position: relative;
             width: 120px;
@@ -77,6 +57,7 @@
             animation: beat 0.8s infinite alternate;
             box-shadow: 0 0 40px #ff4d6d;
         }
+
         .heart:before, .heart:after {
             content: "";
             position: absolute;
@@ -85,10 +66,16 @@
             background-color: #ff4d6d;
             border-radius: 50%;
         }
+
         .heart:before { top: -60px; left: 0; }
         .heart:after { left: 60px; top: 0; }
-        @keyframes beat { 0% { transform: rotate(-45deg) scale(1); } 100% { transform: rotate(-45deg) scale(1.2); } }
 
+        @keyframes beat {
+            0% { transform: rotate(-45deg) scale(1); }
+            100% { transform: rotate(-45deg) scale(1.2); }
+        }
+
+        /* Lời chúc */
         .wish-text {
             margin-top: 60px;
             color: #c9184a;
@@ -97,9 +84,14 @@
             line-height: 1.6;
             font-weight: bold;
             opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+            animation-delay: 3.5s; /* Hiện sau khi dòng code chạy xong */
         }
-        .animate-fade { animation: fadeIn 2s ease-in forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .sparkle {
             position: absolute;
@@ -108,26 +100,21 @@
             background: #ffb3c1;
             border-radius: 50%;
             animation: fly 3s infinite linear;
+            z-index: 1;
         }
-        @keyframes fly { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100vh); opacity: 0; } }
+
+        @keyframes fly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Crush-Music.mp3" type="audio/mpeg">
-        </audio>
-
-    <div id="welcome-screen">
-        <button class="gift-btn" onclick="startSurprise()">Mở món quà 8/3 từ Anh ❤️</button>
-        <p style="margin-top: 15px; color: #ff4d6d; font-size: 0.9rem;">(Bật âm thanh để trải nghiệm tốt nhất)</p>
-    </div>
-
-    <div class="container" id="main-content">
-        <div class="code-header" id="typing-text">Input: Anh - Output: Yêu Em</div>
+    <div class="container">
         <div class="heart"></div>
-        <div class="wish-text" id="wish">
-            ❤️8/3❤️  <br>
+        <div class="wish-text">
+            ️8/3❤️  <br>
             Chúc cô gái anh yêu luôn xinh đẹp, hạnh phúc <br>
             Chúc em tất cả <br>
 			Cám ơn em đã đến bên anh <br>
@@ -136,25 +123,6 @@
     </div>
 
     <script>
-        function startSurprise() {
-            // Phát nhạc
-            const music = document.getElementById('bg-music');
-            music.play().catch(e => console.log("Audio play failed"));
-
-            // Chuyển màn hình
-            document.getElementById('welcome-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('welcome-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('typing-text').classList.add('animate-typing');
-                setTimeout(() => {
-                    document.getElementById('wish').classList.add('animate-fade');
-                }, 3000);
-            }, 1000);
-
-            setInterval(createSparkle, 150);
-        }
-
         function createSparkle() {
             const sparkle = document.createElement('div');
             sparkle.classList.add('sparkle');
@@ -164,6 +132,7 @@
             document.body.appendChild(sparkle);
             setTimeout(() => sparkle.remove(), 3000);
         }
+        setInterval(createSparkle, 150);
     </script>
 </body>
 </html>
